@@ -1,0 +1,14 @@
+---
+- hosts: web
+  tasks:
+    - name: update index file
+      template:
+        src: /tmp/index.html.j2
+        dest: /var/www/html/index.html
+      notify: restart apache2
+  handlers:
+    - name: restart apache2
+      service:
+        name: apache2
+        state: restarted
+
