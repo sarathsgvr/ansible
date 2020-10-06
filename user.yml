@@ -1,0 +1,24 @@
+---
+- hosts: web
+  tasks:
+    - name: creating a user
+      user: 
+        name: sarath
+        state: present
+    - name: creating group
+      group:
+        name: support 
+        state: present       
+    - name: Creating file
+      file:
+        path: /home/sarath/file1
+        owner: sarath
+        group: support
+        mode: 0600
+        state: touch
+    - name: Installing NTP
+      apt:
+        name: ntp
+        state: present
+        update_cache: true
+

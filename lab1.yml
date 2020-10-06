@@ -1,0 +1,45 @@
+---
+- hosts: web
+  tasks: 
+    - name: creating first user
+      user:
+        name: test
+        uid: 8888
+        home: /var/tmp/test
+    - name: creating group
+      group:
+        name: grouptest
+        gid: 7777
+    - name: creating second user
+      user:
+        name: usertest
+        uid: 6666
+        group: grouptest
+        shell: /bin/bash
+    - name: create directory
+      file: 
+        path: /tmp/lab1
+        owner: root
+        state: directory
+    - name: create file inside directory
+      file:
+        path: /tmp/lab1/file
+        owner: test
+        state: touch
+    - name: copy /var/log/messages to the file
+      copy:
+        src: /var/log/syslog
+        dest: /tmp/lab1/
+    - name: install apache2
+      apt:
+        name: apache2
+        state: present
+        update_cache: true 
+    - name: create index.html
+      copy:
+        src: /tmp/index.html
+        dest: /var/www/html/index.html
+    - name: Start apache2 service
+      service:
+        name: apache2
+        state: restarted
