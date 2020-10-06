@@ -1,0 +1,115 @@
+- name: Start service httpd, if not running
+  service:
+    name: httpd
+    state: started
+
+- name: Stop service httpd, if running
+  service:
+    name: httpd
+    state: stopped
+
+- name: Restart service httpd, in all cases
+  service:
+    name: httpd
+    state: restarted
+
+- name: Reload service httpd, in all cases
+  service:
+    name: httpd
+    state: reloaded
+
+- name: Enable service httpd, and not touch the running state
+  service:
+    name: httpd
+    enabled: yes
+
+- name: Start service foo, based on running process /usr/bin/foo
+  service:
+    name: foo
+    pattern: /usr/bin/foo
+    state: started
+
+- name: Restart network service for interface eth0
+  service:
+    name: network
+    state: restarted
+    args: eth0
+
+    #Copy files
+
+- name: example copying file with owner and permissions
+  copy:
+    src: /srv/myfiles/foo.conf
+    dest: /etc/foo.conf
+    owner: foo
+    group: foo
+    mode: 0644
+
+- name: The same example as above, but using a symbolic mode equivalent to 0644
+  copy:
+    src: /srv/myfiles/foo.conf
+    dest: /etc/foo.conf
+    owner: foo
+    group: foo
+    mode: u=rw,g=r,o=r
+
+#Mount disk
+
+- name: Mount DVD read-only
+  mount:
+    path: /mnt/dvd
+    src: /dev/sr0
+    fstype: iso9660
+    opts: ro
+    state: present
+
+- name: Mount up device by label
+  mount:
+    path: /srv/disk
+    src: LABEL=SOME_LABEL
+    fstype: ext4
+    state: present
+
+#Add entry in file
+
+- lineinfile:
+    path: /etc/selinux/config
+    regexp: '^SELINUX='
+    line: 'SELINUX=enforcing'
+
+- lineinfile:
+    path: /etc/sudoers
+    state: absent
+    regexp: '^%wheel'
+
+- lineinfile:
+    path: /etc/hosts
+    regexp: '^127\.0\.0\.1'
+    line: '127.0.0.1 localhost'
+    owner: root
+    group: root
+    mode: 0644
+
+#Add multiple lines into a file
+
+    - name: User Activity Capture
+      blockinfile:
+        path: /etc/bashrc
+        block: |
+         PORT=`who am i | awk '{ print $5 }' | sed 's/(//g' | sed 's/)//g'`
+         logger -p local7.notice -t "bash $LOGNAME $$" User $LOGNAME logged from $PORT
+         function history_to_syslog
+         {
+         declare cmd
+         declare p_dir
+         declare LOG_NAME
+         cmd=$(history 1)
+         cmd=$(echo $cmd |awk '{print substr($0,length($1)+2)}')
+         p_dir=$(pwd)
+         LOG_NAME=$(echo $LOGNAME)
+         if [ "$cmd" != "$old_command" ]; then
+         logger -p local7.notice -- SESSION = $$, from_remote_host = $PORT,  USER = $LOG_NAME,  PWD = $p_dir, CMD = "${cmd}"
+         fi
+         old_command=$cmd
+         }
+         trap history_to_syslog DEBUG || EXIT
