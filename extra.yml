@@ -1,0 +1,7 @@
+---
+- hosts: web
+  tasks:
+    - name: pause system for a minute
+      pause:
+        minutes: 1
+
