@@ -1,0 +1,35 @@
+---
+- hosts: web
+  tasks:
+    - name: Install prerequisites
+      apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: true
+      with_items:
+        - default-jdk
+        - wget
+    - name: Create tomcat directory
+      file:
+        name: /opt/tomcat
+        state: directory
+    - name: downlaod tomcat tar file
+      get_url:
+        url: http://mirror.23media.de/apache/tomcat/tomcat-8/v8.5.29/bin/apache-tomcat-8.5.29.tar.gz
+        dest: /opt/tomcat/
+    - name: Extract the tar file
+      shell: tar xvf /opt/tomcat/apache-tomcat-8.5.29.tar.gz -C /opt/tomcat/
+    - name: change permission
+      shell: chmod +x /opt/tomcat/apache-tomcat-8.5.29/bin/startup.sh /opt/tomcat/apache-tomcat-8.5.29/bin/shutdown.sh
+    - name: download sample application
+      get_url:  
+        url: https://tomcat.apache.org/tomcat-8.0-doc/appdev/sample/sample.war 
+        dest: /opt/tomcat/apache-tomcat-8.5.29/webapps/
+    - name: Pause for a minute
+      pause:
+        minutes: 1
+    - name: start tomcat service
+      shell: nohup /opt/tomcat/apache-tomcat-8.5.29/bin/catalina.sh start
+      register: output
+    - debug: 
+        var: output.stdout
