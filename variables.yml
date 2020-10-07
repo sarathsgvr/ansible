@@ -1,0 +1,15 @@
+---
+- hosts: web
+  vars:
+    groupname: ubuntu
+  vars_files:
+    - user_file.yml
+  tasks:
+    - name: create user
+      user:
+        name: "{{ item }}"
+        state: present
+        group: "{{ groupname }}"
+      with_items:
+        - "{{ user1 }}"
+        - "{{ user2 }}"

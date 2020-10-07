@@ -1,0 +1,14 @@
+---
+- hosts: web
+  tasks:
+    - name: install packages using apt
+      apt:
+        name: apache2
+        state: present
+        update_cache: true
+      when: ansible_os_family == "Debian"
+    - name: install packages using yum
+      yum:
+        name: httpd
+        state: present
+      when: ansible_os_family == "redhat"
