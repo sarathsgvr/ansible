@@ -5,3 +5,4 @@
       win_chocolatey:
         name: googlechrome
         state: present
+

@@ -3,3 +3,4 @@ ansible_password: 123qweASDzxc@123
 ansible_connection: winrm
 anisble_winrm_transport: basic
 ansible_winrm_port: 5985
+
