@@ -1,0 +1,11 @@
+$url =“https://raw.githubusercontent.com/ansible/ansible/devel/examples/scripts/ConfigureRemotingForAnsible.ps1”
+
+$file = "$env:temp\ConfigureRemotingForAnsible.ps1”
+(New-Object -TypeName System.Net.WebClient).DownloadFile($url, $file)
+powershell.exe -ExecutionPolicy ByPass -File $file
+
+In order to use, Basic Authentication let’s set WinRM configuration of “AllowUnencrypted” to true.
+winrm set winrm/config/service '@{AllowUnencrypted="true"}’
+
+Let’s verify it now.
+winrm get winrm/config
