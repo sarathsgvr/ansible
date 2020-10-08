@@ -1,0 +1,13 @@
+---
+- hosts: windows
+  tasks: 
+    - name: create group
+      win_group:
+        name: development
+        state: present
+    - name: create user
+      win_user:
+        name: sarath
+        state: present
+        groups: development
+        password: Win@123
