@@ -1,5 +1,5 @@
 ---
-- hosts: windows
+- hosts: all
   tasks:
     - name: creating a user
       user: 
