@@ -1,5 +1,5 @@
 ---
-- hosts: web
+- hosts: local
   tasks:
     - name: creating a user
       user: 
